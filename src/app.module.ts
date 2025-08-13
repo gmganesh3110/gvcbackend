@@ -21,14 +21,14 @@ import { BlocksModule } from './blocks/blocks.module';
 import { TablesModule } from './tables/tables.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ItemsModule } from './items/items.module';
-import { OrdertypesModule } from './ordertypes/ordertypes.module';
 import { OrdersModule } from './orders/orders.module';
 import { OrderitemsModule } from './orderitems/orderitems.module';
-import { OrderstatusModule } from './orderstatus/orderstatus.module';
-import { PaymentmodeModule } from './paymentmode/paymentmode.module';
 import { Block } from './blocks/entities/block.entity';
 import { Table } from './tables/entities/table.entity';
 import { Category } from './categories/entities/category.entity';
+import { Items } from './items/entities/item.entity';
+import { Order } from './orders/entities/order.entity';
+import { Orderitem } from './orderitems/entities/orderitem.entity';
 
 
 @Module({
@@ -68,7 +68,10 @@ import { Category } from './categories/entities/category.entity';
           PageAction,
           Block,
           Table,
-          Category
+          Category,
+          Items,
+          Order,
+          Orderitem
         ],
       }),
     }),
@@ -83,11 +86,8 @@ import { Category } from './categories/entities/category.entity';
     TablesModule,
     CategoriesModule,
     ItemsModule,
-    OrdertypesModule,
     OrdersModule,
     OrderitemsModule,
-    OrderstatusModule,
-    PaymentmodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,10 +12,10 @@ export class CategoriesService {
   constructor(private readonly entityManager: EntityManager) {}
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<any> {
     try {
-      const { category, description, createdBy, activeStatus } =
+      const { category, description, createdBy, activeStatus, type } =
         createCategoryDto;
-      const query = `call categorycreateone(?,?,?,?)`;
-      const params = [category, description, createdBy, activeStatus];
+      const query = `call categorycreateone(?,?,?,?,?)`;
+      const params = [category, type, description, createdBy, activeStatus];
       return await this.entityManager.query(query, params);
     } catch (err) {
       console.log(err);
@@ -24,9 +24,9 @@ export class CategoriesService {
   }
   async getAllCategories(getAllCategoryDto: GetAllCategoryDto): Promise<any> {
     try {
-      const { category, status, start, limit } = getAllCategoryDto;
-      const query = `call categorygetall(?,?,?,?)`;
-      const params = [category, status, start, limit];
+      const { category, type, status, start, limit } = getAllCategoryDto;
+      const query = `call categorygetall(?,?,?,?,?)`;
+      const params = [category, type, status, start, limit];
       return await this.entityManager.query(query, params);
     } catch (err) {
       console.log(err);
@@ -45,10 +45,10 @@ export class CategoriesService {
   }
   async updateCategory(updateCategoryDto: UpdateCategoryDto): Promise<any> {
     try {
-      const { id, category, description, updatedBy, activeStatus } =
+      const { id, category, type, description, updatedBy, activeStatus } =
         updateCategoryDto;
-      const query = `call categoryupdateone(?,?,?,?,?)`;
-      const params = [id, category, description, activeStatus, updatedBy];
+      const query = `call categoryupdateone(?,?,?,?,?,?)`;
+      const params = [id, category, type, description, activeStatus, updatedBy];
       return await this.entityManager.query(query, params);
     } catch (err) {
       console.log(err);

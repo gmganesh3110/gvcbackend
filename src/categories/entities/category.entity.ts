@@ -1,5 +1,11 @@
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn('increment')
@@ -8,6 +14,8 @@ export class Category {
   category: string;
   @Column()
   description: string;
+  @Column()
+  type: string;
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'createdBy' })
   createdBy: User;

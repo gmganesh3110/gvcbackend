@@ -1,34 +1,32 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ItemsService } from './items.service';
-import { CreateItemDto } from './dto/create-item.dto';
-import { UpdateItemDto } from './dto/update-item.dto';
-
+import { CreateItemDto, DeleteItemDto, GetAllItemsDto, UpdateItemDto } from './dto/item.dto';
 @Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
-  @Post()
-  create(@Body() createItemDto: CreateItemDto) {
-    return this.itemsService.create(createItemDto);
+  @Post('add')
+  createItem(@Body() createItemDto: CreateItemDto) {
+    return this.itemsService.createItem(createItemDto);
   }
 
-  @Get()
-  findAll() {
-    return this.itemsService.findAll();
+  @Post('getall')
+  getAll(@Body() getAllItemsDto: GetAllItemsDto) {
+    return this.itemsService.getAllItems(getAllItemsDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.itemsService.findOne(+id);
+  @Post('getone')
+  getSingleItem(@Body('id') id: any) {
+    return this.itemsService.getSingleItem(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto) {
-    return this.itemsService.update(+id, updateItemDto);
+  @Post('update')
+  updateItem(@Body() updateItemDto: UpdateItemDto) {
+    return this.itemsService.updateItem(updateItemDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.itemsService.remove(+id);
+  @Post('delete')
+  deleteSingleItem(@Body() deleteItemDto: DeleteItemDto) {
+    return this.itemsService.deleteSingleItem(deleteItemDto);
   }
 }
