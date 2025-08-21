@@ -44,7 +44,7 @@ export class Order {
   @Column({
     type: 'enum',
     enum: OrderType,
-    default: OrderType.DINE_IN,
+    default: OrderType.DINEIN,
   })
   type: OrderType;
 

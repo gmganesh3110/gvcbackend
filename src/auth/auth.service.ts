@@ -27,7 +27,6 @@ export class AuthService {
         throw new NotFoundException('User not found');
       }
       const hashedpassword=await bcrypt.hashSync(password,10);
-      console.log(hashedpassword)
       const isPasswordMatch: boolean = await bcrypt.compare(
         password,
         user.password,

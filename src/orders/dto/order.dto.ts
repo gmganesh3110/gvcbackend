@@ -8,6 +8,7 @@ export class CreateOrderDto {
   totalAmount: number;
   status: OrderStatus;
   type: OrderType;
+  isPaid: boolean;
   paymentMode?: PaymentMode;
   customerNotes?: string;
   staffNotes?: string;
@@ -19,4 +20,21 @@ export class CreateOrderItemsDto {
   id: number;
   quantity: number;
   price: number;
+}
+
+export class GetOrderDetailsDto {
+  orderId: number;
+}
+
+export class UpdateOrderDto {
+  orderId: number;
+  isPaid: boolean;
+  paymentMode?: PaymentMode;
+  modifiedBy: number;
+  status: OrderStatus;
+}
+
+export class GetAllOrdersDto {
+  start: number;
+  limit: number;
 }

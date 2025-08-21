@@ -42,7 +42,6 @@ export class ItemsService {
       const { categoryId, name, type, status, start, limit } = getAllItemsDto;
       const query = `call itemgetall(?,?,?,?,?,?)`;
       const params = [categoryId, name, type, status, start, limit];
-      console.log('params', params)
       return await this.entityManager.query(query, params);
     } catch (err) {
       throw new InternalServerErrorException(err.message);
