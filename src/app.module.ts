@@ -29,6 +29,9 @@ import { Category } from './categories/entities/category.entity';
 import { Items } from './items/entities/item.entity';
 import { Order } from './orders/entities/order.entity';
 import { Orderitem } from './orderitems/entities/orderitem.entity';
+import { ExpenseitemsModule } from './expenseitems/expenseitems.module';
+import { ExpenseposModule } from './expensepos/expensepos.module';
+import { ExpensepoitemsModule } from './expensepoitems/expensepoitems.module';
 
 
 @Module({
@@ -88,6 +91,9 @@ import { Orderitem } from './orderitems/entities/orderitem.entity';
     ItemsModule,
     OrdersModule,
     OrderitemsModule,
+    ExpenseitemsModule,
+    ExpenseposModule,
+    ExpensepoitemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

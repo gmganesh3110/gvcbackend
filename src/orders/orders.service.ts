@@ -72,9 +72,9 @@ export class OrdersService {
 
   async getAllOrders(getAllOrdersDto: GetAllOrdersDto): Promise<any> {
     try {
-      const { start, limit } = getAllOrdersDto;
-      const query = `call ordergetall(?,?)`;
-      const params = [start, limit];
+      const { start, limit , orderId,fromDate,toDate, orderType, orderStatus } = getAllOrdersDto;
+      const query = `call ordergetall(?,?,?,?,?,?,?)`;
+      const params = [start, limit, orderId, fromDate, toDate, orderType, orderStatus];
       return await this.entityManager.query(query, params);
     } catch (err) {
       console.log(err);

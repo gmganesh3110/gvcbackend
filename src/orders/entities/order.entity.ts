@@ -52,7 +52,7 @@ export class Order {
     type: 'enum',
     enum: PaymentMode,
     default: PaymentMode.CASH,
-    nullable:true
+    nullable: true,
   })
   paymentMode?: PaymentMode;
 
@@ -64,6 +64,12 @@ export class Order {
 
   @Column({ name: 'isPaid', default: false })
   isPaid: boolean;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  time: Date;
 
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'createdBy' })

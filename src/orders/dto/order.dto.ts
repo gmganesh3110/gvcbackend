@@ -35,6 +35,11 @@ export class UpdateOrderDto {
 }
 
 export class GetAllOrdersDto {
+  fromDate?: Date;
+  orderType?: OrderType;
+  orderStatus?: OrderStatus;
+  toDate?: Date;
+  orderId?: number;
   start: number;
   limit: number;
 }
