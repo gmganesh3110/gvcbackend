@@ -35,6 +35,10 @@ import { ExpensepoitemsModule } from './expensepoitems/expensepoitems.module';
 import { Expenseitem } from './expenseitems/entities/expenseitem.entity';
 import { Expensepo } from './expensepos/entities/expensepo.entity';
 import { Expensepoitem } from './expensepoitems/entities/expensepoitem.entity';
+import { PoinventoryModule } from './poinventory/poinventory.module';
+import { PurchaseordersModule } from './purchaseorders/purchaseorders.module';
+import { PurchaseorderitemsModule } from './purchaseorderitems/purchaseorderitems.module';
+import { Poinventory } from './poinventory/entities/poinventory.entity';
 
 
 @Module({
@@ -80,7 +84,8 @@ import { Expensepoitem } from './expensepoitems/entities/expensepoitem.entity';
           Orderitem,
           Expenseitem,
           Expensepo,
-          Expensepoitem
+          Expensepoitem,
+          Poinventory
         ],
       }),
     }),
@@ -100,6 +105,9 @@ import { Expensepoitem } from './expensepoitems/entities/expensepoitem.entity';
     ExpenseitemsModule,
     ExpenseposModule,
     ExpensepoitemsModule,
+    PoinventoryModule,
+    PurchaseordersModule,
+    PurchaseorderitemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
