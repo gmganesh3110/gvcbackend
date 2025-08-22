@@ -1,34 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ExpenseposService } from './expensepos.service';
-import { CreateExpensepoDto } from './dto/create-expensepo.dto';
-import { UpdateExpensepoDto } from './dto/update-expensepo.dto';
-
+import { CreateExpensepoDto, DeleteExpenseDto, GetAllExpensePosData, GetOneExpensePosData } from './dto/expensepo.dto';
 @Controller('expensepos')
 export class ExpenseposController {
   constructor(private readonly expenseposService: ExpenseposService) {}
-
-  @Post()
-  create(@Body() createExpensepoDto: CreateExpensepoDto) {
-    return this.expenseposService.create(createExpensepoDto);
+  @Post("create")
+  createExpensePo(@Body() createExpensepoDto: CreateExpensepoDto) {
+    return this.expenseposService.createExpensePo(createExpensepoDto);
+  }
+  @Post('getall')
+  getAllExpensePos(@Body() getAllExpensePosData: GetAllExpensePosData) {
+    return this.expenseposService.getAllExpensePos(getAllExpensePosData);
+  }
+  @Post("getone")
+  getOneExpensePos(@Body() getOneExpensePosData: GetOneExpensePosData) {
+    return this.expenseposService.getOneExpensePos(getOneExpensePosData);
   }
 
-  @Get()
-  findAll() {
-    return this.expenseposService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.expenseposService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpensepoDto: UpdateExpensepoDto) {
-    return this.expenseposService.update(+id, updateExpensepoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.expenseposService.remove(+id);
+  @Post("delete")
+  deleteExpensePos(@Body() deleteExpenseDto: DeleteExpenseDto) {
+    return this.expenseposService.deleteExpensePos(deleteExpenseDto);
   }
 }

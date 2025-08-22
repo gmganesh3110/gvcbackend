@@ -1,26 +1,78 @@
-import { Injectable } from '@nestjs/common';
-import { CreateExpenseitemDto } from './dto/create-expenseitem.dto';
-import { UpdateExpenseitemDto } from './dto/update-expenseitem.dto';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+
+import { EntityManager } from 'typeorm';
+import {
+  CreateExpenseitemDto,
+  DeleteExpenseitemDto,
+  GetAllExpenseitemsDto,
+  UpdateExpenseitemDto,
+} from './dto/expenseitem.dto';
 
 @Injectable()
 export class ExpenseitemsService {
-  create(createExpenseitemDto: CreateExpenseitemDto) {
-    return 'This action adds a new expenseitem';
+  constructor(private readonly entityManager: EntityManager) {}
+  async createExpenseitem(
+    createExpenseitemDto: CreateExpenseitemDto,
+  ): Promise<any> {
+    try {
+      const { expenseItem, description, createdBy, activeStatus } =
+        createExpenseitemDto;
+      const query = `call expenseitemcreateone(?,?,?,?)`;
+      const params = [expenseItem, description, createdBy, activeStatus];
+      return await this.entityManager.query(query, params);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  findAll() {
-    return `This action returns all expenseitems`;
+  async getAllExpenseitems(
+    getAllExpenseitemsDto: GetAllExpenseitemsDto,
+  ): Promise<any> {
+    try {
+      const { expenseItem, status, start, limit } = getAllExpenseitemsDto;
+      const query = `call expenseitemgetall(?,?,?,?)`;
+      const params = [expenseItem, status, start, limit];
+      return await this.entityManager.query(query, params);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} expenseitem`;
+  async getSingleExpenseitem(id: number): Promise<any> {
+    try {
+      const query = `call expenseitemgetone(?)`;
+      const params = [id];
+      return await this.entityManager.query(query, params);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  update(id: number, updateExpenseitemDto: UpdateExpenseitemDto) {
-    return `This action updates a #${id} expenseitem`;
+  async updateExpenseitem(
+    updateExpenseitemDto: UpdateExpenseitemDto,
+  ): Promise<any> {
+    try {
+      const { id, expenseItem, description, updatedBy, activeStatus } =
+        updateExpenseitemDto;
+      const query = `call expenseitemupdateone(?,?,?,?,?)`;
+      const params = [id, expenseItem, description, activeStatus, updatedBy];
+      return await this.entityManager.query(query, params);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} expenseitem`;
+  async deleteSingleExpenseitem(
+    deleteExpenseitemDto: DeleteExpenseitemDto,
+  ): Promise<any> {
+    try {
+      const { id, updatedBy } = deleteExpenseitemDto;
+      const query = `call expenseitemdeleteone(?,?)`;
+      const params = [id, updatedBy];
+      return await this.entityManager.query(query, params);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
 }

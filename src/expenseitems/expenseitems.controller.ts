@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ExpenseitemsService } from './expenseitems.service';
-import { CreateExpenseitemDto } from './dto/create-expenseitem.dto';
-import { UpdateExpenseitemDto } from './dto/update-expenseitem.dto';
+import {
+  CreateExpenseitemDto,
+  DeleteExpenseitemDto,
+  GetAllExpenseitemsDto,
+  UpdateExpenseitemDto,
+} from './dto/expenseitem.dto';
 
 @Controller('expenseitems')
 export class ExpenseitemsController {
   constructor(private readonly expenseitemsService: ExpenseitemsService) {}
 
-  @Post()
+  @Post('add')
   create(@Body() createExpenseitemDto: CreateExpenseitemDto) {
-    return this.expenseitemsService.create(createExpenseitemDto);
+    return this.expenseitemsService.createExpenseitem(createExpenseitemDto);
   }
 
-  @Get()
-  findAll() {
-    return this.expenseitemsService.findAll();
+  @Post('getall')
+  getAll(@Body() getAllExpenseitemsDto: GetAllExpenseitemsDto) {
+    return this.expenseitemsService.getAllExpenseitems(getAllExpenseitemsDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.expenseitemsService.findOne(+id);
+  @Post('getone')
+  getSingle(@Body('id') id: any) {
+    return this.expenseitemsService.getSingleExpenseitem(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpenseitemDto: UpdateExpenseitemDto) {
-    return this.expenseitemsService.update(+id, updateExpenseitemDto);
+  @Post('update')
+  updateSingle(@Body() updateExpenseitemDto: UpdateExpenseitemDto) {
+    return this.expenseitemsService.updateExpenseitem(updateExpenseitemDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.expenseitemsService.remove(+id);
+  @Post('delete')
+  deleteSingle(@Body() deleteExpenseitemDto: DeleteExpenseitemDto) {
+    return this.expenseitemsService.deleteSingleExpenseitem(
+      deleteExpenseitemDto,
+    );
   }
 }

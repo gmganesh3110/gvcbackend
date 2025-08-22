@@ -32,6 +32,9 @@ import { Orderitem } from './orderitems/entities/orderitem.entity';
 import { ExpenseitemsModule } from './expenseitems/expenseitems.module';
 import { ExpenseposModule } from './expensepos/expensepos.module';
 import { ExpensepoitemsModule } from './expensepoitems/expensepoitems.module';
+import { Expenseitem } from './expenseitems/entities/expenseitem.entity';
+import { Expensepo } from './expensepos/entities/expensepo.entity';
+import { Expensepoitem } from './expensepoitems/entities/expensepoitem.entity';
 
 
 @Module({
@@ -74,7 +77,10 @@ import { ExpensepoitemsModule } from './expensepoitems/expensepoitems.module';
           Category,
           Items,
           Order,
-          Orderitem
+          Orderitem,
+          Expenseitem,
+          Expensepo,
+          Expensepoitem
         ],
       }),
     }),

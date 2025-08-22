@@ -1,26 +1,75 @@
-import { Injectable } from '@nestjs/common';
-import { CreateExpensepoDto } from './dto/create-expensepo.dto';
-import { UpdateExpensepoDto } from './dto/update-expensepo.dto';
-
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { CreateExpensepoDto, DeleteExpenseDto, GetAllExpensePosData, GetOneExpensePosData } from './dto/expensepo.dto';
+import { EntityManager } from 'typeorm';
 @Injectable()
 export class ExpenseposService {
-  create(createExpensepoDto: CreateExpensepoDto) {
-    return 'This action adds a new expensepo';
+  constructor(private readonly entityManager: EntityManager) {}
+  async createExpensePo(createExpensepoDto: CreateExpensepoDto) {
+    try {
+      const query = `call expensepocreateone(?,?,?,?,?)`;
+      const params = [
+        createExpensepoDto.billNo,
+        createExpensepoDto.totalAmount,
+        createExpensepoDto.date,
+        createExpensepoDto.paymentMethod,
+        createExpensepoDto.createdBy,
+      ];
+      const res = await this.entityManager.query(query, params);
+      const expensePoId = res[0][0]?.pid;
+      const expensePoItemsQuery = `call expensepocreateitemscreateone(?,?,?,?,?,?)`;
+      for (const item of createExpensepoDto.expenseItems) {
+        await this.entityManager.query(expensePoItemsQuery, [
+          expensePoId,
+          item.item,
+          item.qty,
+          item.price,
+          item.amount,
+          createExpensepoDto.createdBy,
+        ]);
+      }
+      return { id: expensePoId };
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  findAll() {
-    return `This action returns all expensepos`;
+  async getAllExpensePos(getAllExpensePosData: GetAllExpensePosData) {
+    try {
+      const query = `call expensepogetall(?,?,?,?,?)`;
+      const params = [
+        getAllExpensePosData.billNo,
+        getAllExpensePosData.fromDate,
+        getAllExpensePosData.toDate,
+        getAllExpensePosData.start,
+        getAllExpensePosData.limit,
+      ];
+      const res = await this.entityManager.query(query, params);
+      return res;
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} expensepo`;
+  async getOneExpensePos(getOneExpensePosData: GetOneExpensePosData) {
+    try {
+      const query = `call expensepogetone(?)`;
+      const params = [getOneExpensePosData.id];
+      const res = await this.entityManager.query(query, params);
+      return res;
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
-
-  update(id: number, updateExpensepoDto: UpdateExpensepoDto) {
-    return `This action updates a #${id} expensepo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} expensepo`;
+  async deleteExpensePos(deleteExpenseDto: DeleteExpenseDto) {
+    try {
+      const query = `call expensepodeleteone(?,?)`;
+      const params = [deleteExpenseDto.id, deleteExpenseDto.updatedBy];
+      const res = await this.entityManager.query(query, params);
+      return res;
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
 }
