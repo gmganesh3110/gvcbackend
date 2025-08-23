@@ -6,6 +6,8 @@ export class CreateItemDto {
   categoryId: number;
   createdBy: number;
   activeStatus: number;
+  image: any;
+  type: string;
 }
 
 export class GetAllItemsDto {
@@ -26,6 +28,7 @@ export class UpdateItemDto {
   categoryId: number;
   updatedBy: number;
   activeStatus: number;
+  image: any;
 }
 
 export class DeleteItemDto {

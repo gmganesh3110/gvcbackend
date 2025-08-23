@@ -20,8 +20,10 @@ export class ItemsService {
         categoryId,
         createdBy,
         activeStatus,
+        image,
+        type
       } = createItemDto;
-      const query = `call itemcreateone(?,?,?,?,?,?,?)`;
+      const query = `call itemcreateone(?,?,?,?,?,?,?,?,?)`;
       const params = [
         name,
         description,
@@ -30,6 +32,8 @@ export class ItemsService {
         categoryId,
         createdBy,
         activeStatus,
+        image,
+        type
       ];
       return await this.entityManager.query(query, params);
     } catch (err) {
@@ -68,8 +72,9 @@ export class ItemsService {
         categoryId,
         updatedBy,
         activeStatus,
+        image
       } = updateItemDto;
-      const query = `call itemupdateone(?,?,?,?,?,?,?,?)`;
+      const query = `call itemupdateone(?,?,?,?,?,?,?,?,?)`;
       const params = [
         id,
         name,
@@ -79,6 +84,7 @@ export class ItemsService {
         categoryId,
         activeStatus,
         updatedBy,
+        image ?? ''
       ];
       return await this.entityManager.query(query, params);
     } catch (err) {

@@ -32,6 +32,9 @@ export class Items {
   @Column({ length: 20 })
   type: string;
 
+  @Column({ type: 'longtext', nullable: true })
+  image?: string; // base64 string
+
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'createdBy' })
   createdBy: User;
