@@ -37,7 +37,7 @@ export class Order {
   @Column({
     type: 'enum',
     enum: OrderStatus,
-    default: OrderStatus.ORDERED,
+    default: OrderStatus.INPROGRESS,
   })
   status: OrderStatus;
 
