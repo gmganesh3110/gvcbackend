@@ -6,30 +6,31 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { LoginDto, LoginResponse } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
   async login(loginDto: LoginDto): Promise<LoginResponse> {
     try {
       const { email, password } = loginDto;
-      const query = `CALL authgetloginuser(?)`;
-      const params = [email];
-      const result = await this.entityManager.query(query, params);
-      const user = result[0]?.[0];
+      const user = await this.userRepository.findOne({
+        where: { email },
+      });
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      const hashedpassword=await bcrypt.hashSync(password,10);
       const isPasswordMatch: boolean = await bcrypt.compare(
         password,
-        user.password,
+        user.password!,
       );
       if (!isPasswordMatch) {
         throw new UnauthorizedException('Password does not match');
@@ -38,7 +39,7 @@ export class AuthService {
       const token = await this.jwtService.signAsync(payload, {
         secret: this.configService.get('JWT_SECRET'),
       });
-      delete user.password;
+      user.password = undefined;
       return {
         user,
         token,

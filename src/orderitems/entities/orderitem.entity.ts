@@ -8,11 +8,11 @@ export class Orderitem {
   @PrimaryGeneratedColumn('increment')
   id: number;
   @ManyToOne(() => Order, { nullable: true })
-  @JoinColumn({ name: 'orderId' })
-  orderId: Order;
+  @JoinColumn({ name: 'order' })
+  order: Order;
   @ManyToOne(() => Items, { nullable: true })
-  @JoinColumn({ name: 'itemId' })
-  itemId: Items;
+  @JoinColumn({ name: 'item' })
+  item: Items;
   @Column()
   quantity: number;
   @Column()

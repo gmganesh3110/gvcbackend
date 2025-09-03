@@ -3,8 +3,8 @@ import { OrderType } from 'src/constants/OrderTypes';
 import { PaymentMode } from 'src/constants/Paymodes';
 
 export class CreateOrderDto {
-  blockId: number;
-  tableId: number;
+  block: number;   // Just store the ID
+  table: number;   // Just store the ID
   totalAmount: number;
   status: OrderStatus;
   type: OrderType;
@@ -17,7 +17,7 @@ export class CreateOrderDto {
 }
 
 export class CreateOrderItemsDto {
-  id: number;
+  id: number; // itemId
   quantity: number;
   price: number;
 }

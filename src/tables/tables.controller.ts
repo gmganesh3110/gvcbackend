@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Put,
 } from '@nestjs/common';
 import { TablesService } from './tables.service';
 import {
@@ -19,9 +21,9 @@ import {
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}
 
-  @Post('getall')
+  @Get('getall')
   async getAllUserRole(
-    @Body() getAllUserRoleDto: GetAllTablesDto,
+    @Query() getAllUserRoleDto: GetAllTablesDto,
   ): Promise<any> {
     return await this.tablesService.getAllTables(getAllUserRoleDto);
   }
@@ -31,9 +33,9 @@ export class TablesController {
     return await this.tablesService.addTable(addUserRoleDto);
   }
 
-  @Post('getone')
-  async getSingleUserRole(@Body() id: any): Promise<any> {
-    return await this.tablesService.getSingleTable(id.id);
+  @Get('getone/:id')
+  async getSingleUserRole(@Param('id') id: number): Promise<any> {
+    return await this.tablesService.getSingleTable(id);
   }
 
   @Post('delete')
@@ -43,10 +45,11 @@ export class TablesController {
     return await this.tablesService.deleteTable(deleteUserRoleDto);
   }
 
-  @Post('update')
+  @Put('update/:id')
   async updateUserRole(
+    @Param('id') id: number,
     @Body() updateUserRoleDto: UpdateTableDto,
   ): Promise<any> {
-    return await this.tablesService.updateTable(updateUserRoleDto);
+    return await this.tablesService.updateTable({ ...updateUserRoleDto, id });
   }
 }

@@ -1,10 +1,12 @@
 import { Block } from 'src/blocks/entities/block.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 @Entity()
@@ -12,8 +14,8 @@ export class Table {
   @PrimaryGeneratedColumn('increment')
   id: number;
   @ManyToOne(() => Block, { nullable: true })
-  @JoinColumn({ name: 'blockId' })
-  blockId: Block;
+  @JoinColumn({ name: 'block' })
+  block: Block;
   @Column({ unique: true })
   tableName: string;
   @Column()
@@ -32,4 +34,7 @@ export class Table {
   updatedAt: Date;
   @Column()
   activeStatus: number;
+
+  @OneToMany(() => Order, (order) => order.table)
+  orders: Order[];
 }

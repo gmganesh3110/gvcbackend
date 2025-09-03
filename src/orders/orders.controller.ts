@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
   CreateOrderDto,
@@ -10,7 +10,7 @@ import {
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
-  @Post('getblocksandtableswithorders')
+  @Get('getblocksandtableswithorders')
   async getBlocksAndTablesWithOrders() {
     return await this.ordersService.getBlocksAndTablesWithOrders();
   }

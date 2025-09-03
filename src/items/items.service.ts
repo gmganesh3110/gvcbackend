@@ -1,15 +1,21 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import {
   CreateItemDto,
   DeleteItemDto,
   GetAllItemsDto,
   UpdateItemDto,
 } from './dto/item.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Items } from './entities/item.entity';
 
 @Injectable()
 export class ItemsService {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    private readonly entityManager: EntityManager,
+    @InjectRepository(Items)
+    private readonly itemsRepository: Repository<Items>,
+  ) {}
   async createItem(createItemDto: CreateItemDto): Promise<any> {
     try {
       const {
@@ -21,7 +27,7 @@ export class ItemsService {
         createdBy,
         activeStatus,
         image,
-        type
+        type,
       } = createItemDto;
       const query = `call itemcreateone(?,?,?,?,?,?,?,?,?)`;
       const params = [
@@ -33,7 +39,7 @@ export class ItemsService {
         createdBy,
         activeStatus,
         image,
-        type
+        type,
       ];
       return await this.entityManager.query(query, params);
     } catch (err) {
@@ -44,9 +50,11 @@ export class ItemsService {
   async getAllItems(getAllItemsDto: GetAllItemsDto): Promise<any> {
     try {
       const { categoryId, name, type, status, start, limit } = getAllItemsDto;
-      const query = `call itemgetall(?,?,?,?,?,?)`;
-      const params = [categoryId, name, type, status, start, limit];
-      return await this.entityManager.query(query, params);
+      const [data, total] = await this.itemsRepository.findAndCount({
+        skip: start,
+        take: limit,
+      });
+      return { data, total };
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
@@ -72,7 +80,7 @@ export class ItemsService {
         categoryId,
         updatedBy,
         activeStatus,
-        image
+        image,
       } = updateItemDto;
       const query = `call itemupdateone(?,?,?,?,?,?,?,?,?)`;
       const params = [
@@ -84,7 +92,7 @@ export class ItemsService {
         categoryId,
         activeStatus,
         updatedBy,
-        image ?? ''
+        image ?? '',
       ];
       return await this.entityManager.query(query, params);
     } catch (err) {

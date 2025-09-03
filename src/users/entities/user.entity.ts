@@ -1,11 +1,13 @@
+import { Block } from 'src/blocks/entities/block.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
+import {Table} from 'src/tables/entities/table.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -23,7 +25,7 @@ export class User {
   @Column()
   userRole: string;
   @Column()
-  password: string;
+  password?: string;
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'createdBy' })
   createdBy: User;
@@ -36,4 +38,18 @@ export class User {
   updatedAt: Date;
   @Column()
   activeStatus: number;
+
+  @OneToMany(() => Block, (block) => block.createdBy)
+  createdBlocks: Block[];
+
+  @OneToMany(() => Block, (block) => block.updatedBy)
+  updatedBlocks: Block[];
+
+  @OneToMany(() => Table, (table) => table.createdBy)
+  createdTables: Table[];
+
+  @OneToMany(() => Table, (table) => table.updatedBy)
+  updatedTables: Table[];
+
+  
 }

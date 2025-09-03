@@ -10,8 +10,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Orderitem } from 'src/orderitems/entities/orderitem.entity';
 
 @Entity()
 export class Order {
@@ -19,12 +21,12 @@ export class Order {
   id: number;
 
   @ManyToOne(() => Block, { nullable: true })
-  @JoinColumn({ name: 'blockId' })
-  blockId: Block;
+  @JoinColumn({ name: 'block' })
+  block: Block;
 
   @ManyToOne(() => Table, { nullable: true })
-  @JoinColumn({ name: 'tableId' })
-  tableId: Table;
+  @JoinColumn({ name: 'table' })
+  table: Table;
 
   @Column({
     type: 'decimal',
@@ -83,4 +85,7 @@ export class Order {
   updatedAt: Date;
   @Column()
   activeStatus: number;
+
+  @OneToMany(() => Orderitem, (item) => item.order)
+  items: Orderitem[];
 }

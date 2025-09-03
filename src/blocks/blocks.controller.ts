@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Query } from '@nestjs/common';
+import { Controller, Post, Body, Query, Get, Param, Put, Delete } from '@nestjs/common';
 import { BlocksService } from './blocks.service';
 import { CreateBlockDto, DeleteBlockDto, GetAllBlocksDto, UpdateBlockDto } from './dto/block.dto';
 
@@ -11,23 +11,23 @@ export class BlocksController {
     return this.blocksService.createBlock(createBlockDto);
   }
 
-  @Post('getall')
-  getAllBlocks(@Body() getAllBlocksDto: GetAllBlocksDto) {
+  @Get('getall')
+  getAllBlocks(@Query() getAllBlocksDto: GetAllBlocksDto) {
     return this.blocksService.getAllBlocks(getAllBlocksDto);
   }
 
-  @Post('getone')
-  getSingleBlock(@Body('id') id: any) {
+  @Get('getone/:id')
+  getSingleBlock(@Param('id') id: number) {
     return this.blocksService.getSingleBlock(id);
   }
 
-  @Post('update')
-  updateSingleBlock(@Body() updateBlockDto: UpdateBlockDto) {
-    return this.blocksService.updateBlock(updateBlockDto);
+  @Put('update/:id')
+  updateSingleBlock(@Param('id') id: number, @Body() updateBlockDto: UpdateBlockDto) {
+    return this.blocksService.updateBlock(id, updateBlockDto);
   }
 
-  @Post('delete')
-  deleteSingleBlock(@Body() deleteBlockDto: DeleteBlockDto) {
-    return this.blocksService.deleteSingleBlock(deleteBlockDto);
+  @Delete('delete/:id')
+  deleteSingleBlock(@Param('id') id: number, @Body() deleteBlockDto: DeleteBlockDto) {
+    return this.blocksService.deleteSingleBlock(id, deleteBlockDto);
   }
 }
