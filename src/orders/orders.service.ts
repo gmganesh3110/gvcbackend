@@ -1,11 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   CreateOrderDto,
   GetAllOrdersDto,
   GetOrderDetailsDto,
   UpdateOrderDto,
 } from './dto/order.dto';
-import { EntityManager, Repository } from 'typeorm';
+import { Between, EntityManager, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Block } from 'src/blocks/entities/block.entity';
 import { Order } from './entities/order.entity';
@@ -41,7 +45,7 @@ export class OrdersService {
             },
           },
         },
-        where: { activeStatus: 1 , tables: { activeStatus: 1 } },
+        where: { activeStatus: 1, tables: { activeStatus: 1 } },
         relations: ['tables', 'tables.orders'],
       });
       return blocks;
@@ -50,71 +54,122 @@ export class OrdersService {
       throw new InternalServerErrorException(err.message);
     }
   }
-async createOrder(createOrderDto: CreateOrderDto): Promise<any> {
-  try {
-    // Create order entity using IDs
-    const order = this.ordersRepository.create({
-      block: { id: createOrderDto.block },   // Block entity with ID
-      table: { id: createOrderDto.table },   // Table entity with ID
-      totalAmount: createOrderDto.totalAmount,
-      status: createOrderDto.status,
-      type: createOrderDto.type,
-      isPaid: createOrderDto.isPaid,
-      paymentMode: createOrderDto.paymentMode,
-      createdBy: { id: createOrderDto.createdBy }, // User with ID
-      updatedBy: { id: createOrderDto.createdBy },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      activeStatus: 1,
-    });
+  async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
+    try {
+      // Create order entity using IDs
 
-    // Save order first
-    const savedOrder = await this.ordersRepository.save(order);
-
-    // Create order items
-    const orderItems = createOrderDto.items.map((item) =>
-      this.orderItemsRepository.create({
-        order: { id: savedOrder.id },
-        item: { id: item.id },  // Item entity with ID
-        quantity: item.quantity,
-        price: item.price,
-        createdBy: { id: createOrderDto.createdBy },
+      console.log('createOrderDto', createOrderDto);
+      const order = this.ordersRepository.create({
+        totalAmount: createOrderDto.totalAmount,
+        status: createOrderDto.status,
+        type: createOrderDto.type,
+        isPaid: createOrderDto.isPaid,
+        paymentMode: createOrderDto.paymentMode,
+        createdBy: { id: createOrderDto.createdBy }, // User with ID
         updatedBy: { id: createOrderDto.createdBy },
         createdAt: new Date(),
         updatedAt: new Date(),
         activeStatus: 1,
-      }),
-    );
+        ...(createOrderDto.block
+          ? { block: { id: createOrderDto.block } }
+          : {}),
+        ...(createOrderDto.table
+          ? { table: { id: createOrderDto.table } }
+          : {}),
+      });
 
-    await this.orderItemsRepository.save(orderItems);
+      const savedOrder = await this.ordersRepository.save(order);
 
-    return { id: savedOrder.id };
-  } catch (err) {
-    console.log(err);
-    throw new InternalServerErrorException(err.message);
-  }
-}
+      // Create order items
+      const orderItems = createOrderDto.items.map((item) =>
+        this.orderItemsRepository.create({
+          order: { id: savedOrder.id },
+          item: { id: item.id }, // Item entity with ID
+          quantity: item.quantity,
+          price: item.price,
+          createdBy: { id: createOrderDto.createdBy },
+          updatedBy: { id: createOrderDto.createdBy },
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          activeStatus: 1,
+        }),
+      );
 
+      await this.orderItemsRepository.save(orderItems);
 
-
-  async getOrderDetails(getOrderDetailsDto: GetOrderDetailsDto): Promise<any> {
-    try {
-      const { orderId } = getOrderDetailsDto;
-      const query = `call ordergetdetails(?)`;
-      const params = [orderId];
-      return await this.entityManager.query(query, params);
+      return savedOrder;
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException(err.message);
     }
   }
+
+  async getOrderDetails(getOrderDetailsDto: GetOrderDetailsDto): Promise<any> {
+    try {
+      const { orderId } = getOrderDetailsDto;
+
+      const order = await this.ordersRepository.findOne({
+        where: { id: orderId },
+        relations: ['createdBy', 'updatedBy', 'orderitems', 'orderitems.item'],
+        select: {
+          id: true,
+          totalAmount: true,
+          type: true,
+          paymentMode: true,
+          isPaid: true,
+          status: true,
+          orderitems: {
+            id: true,
+            price: true,
+            quantity: true,
+            item: {
+              id: true,
+              name: true,
+              price: true,
+            },
+          },
+        },
+      });
+
+      if (!order) {
+        throw new NotFoundException(`Order with ID ${orderId} not found`);
+      }
+
+      return order;
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
   async updateOrder(updateOrderDto: UpdateOrderDto): Promise<any> {
     try {
       const { orderId, isPaid, paymentMode, modifiedBy, status } =
         updateOrderDto;
-      const query = `call orderupdate(?,?,?,?,?)`;
-      const params = [orderId, isPaid, paymentMode, modifiedBy, status];
-      return await this.entityManager.query(query, params);
+
+      // find existing order
+      const order = await this.ordersRepository.findOne({
+        where: { id: orderId },
+      });
+
+      if (!order) {
+        throw new NotFoundException(`Order with ID ${orderId} not found`);
+      }
+
+      // update fields
+      order.isPaid = isPaid;
+      order.paymentMode = paymentMode;
+      order.status = status;
+      order.updatedBy = { id: modifiedBy } as any; // relation to User
+      order.updatedAt = new Date();
+
+      // save updated entity
+      const updatedOrder = await this.ordersRepository.save(order);
+
+      return {
+        message: 'Order updated successfully',
+        order: updatedOrder,
+      };
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException(err.message);
@@ -124,25 +179,50 @@ async createOrder(createOrderDto: CreateOrderDto): Promise<any> {
   async getAllOrders(getAllOrdersDto: GetAllOrdersDto): Promise<any> {
     try {
       const {
-        start,
-        limit,
+        start = 0,
+        limit = 10,
         orderId,
         fromDate,
         toDate,
         orderType,
         orderStatus,
       } = getAllOrdersDto;
-      const query = `call ordergetall(?,?,?,?,?,?,?)`;
-      const params = [
-        start,
-        limit,
-        orderId,
-        fromDate,
-        toDate,
-        orderType,
-        orderStatus,
-      ];
-      return await this.entityManager.query(query, params);
+
+      const where: any = { activeStatus: 1 };
+
+      if (orderId && orderId > 0) {
+        where.id = orderId;
+      }
+
+      if (fromDate && toDate) {
+        where.date = Between(new Date(fromDate), new Date(toDate));
+      }
+
+      if (orderType) {
+        where.type = orderType;
+      }
+
+      if (orderStatus) {
+        where.status = orderStatus;
+      }
+
+      const [data, total] = await this.ordersRepository.findAndCount({
+        where,
+        select: {
+          id: true,
+          totalAmount: true,
+          isPaid: true,
+          status: true,
+          type: true,
+          date: true,
+          time: true,
+        },
+        order: { id: 'DESC' },
+        skip: start,
+        take: limit,
+      });
+
+      return { data, total };
     } catch (err) {
       console.log(err);
       throw new InternalServerErrorException(err.message);

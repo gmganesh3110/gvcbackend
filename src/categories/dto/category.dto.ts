@@ -1,3 +1,5 @@
+import { Category } from "../entities/category.entity";
+
 export class CreateCategoryDto {
   category: string;
   description: string;
@@ -12,6 +14,11 @@ export class GetAllCategoryDto {
   category: string;
   type: string;
   status?: number;
+}
+
+export class GetAllCategoryResponse{
+  data: Category[];
+  total: number;
 }
 
 export class UpdateCategoryDto {

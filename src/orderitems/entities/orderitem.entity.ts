@@ -29,4 +29,5 @@ export class Orderitem {
   updatedAt: Date;
   @Column()
   activeStatus: number;
+
 }

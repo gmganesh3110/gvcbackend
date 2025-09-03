@@ -1,4 +1,5 @@
 import { Category } from 'src/categories/entities/category.entity';
+import { Orderitem } from 'src/orderitems/entities/orderitem.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
@@ -6,6 +7,7 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('items')
@@ -13,7 +15,7 @@ export class Items {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 150 })
+  @Column()
   name: string;
 
   @Column({ type: 'text', nullable: true })
@@ -26,8 +28,8 @@ export class Items {
   available: boolean;
 
   @ManyToOne(() => Category)
-  @JoinColumn({ name: 'categoryId' })
-  categoryId: Category;
+  @JoinColumn({ name: 'category' })
+  category: Category;
 
   @Column({ length: 20 })
   type: string;
@@ -47,4 +49,7 @@ export class Items {
   updatedAt: Date;
   @Column()
   activeStatus: number;
+
+  @OneToMany(()=>Orderitem,(orderitem)=>orderitem.item)
+  orderitems:Orderitem[];
 }

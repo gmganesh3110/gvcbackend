@@ -8,6 +8,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import {Table} from 'src/tables/entities/table.entity';
+import { Category } from 'src/categories/entities/category.entity';
+import { Items } from 'src/items/entities/item.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -51,5 +53,17 @@ export class User {
   @OneToMany(() => Table, (table) => table.updatedBy)
   updatedTables: Table[];
 
-  
+
+  @OneToMany(() => Category, (category) => category.createdBy)
+  createdCategories: Category[];
+
+  @OneToMany(() => Category, (category) => category.updatedBy)
+  updatedCategories: Category[];
+
+  @OneToMany(()=> Items,(item)=>item.createdBy)
+  createItem:Items[];
+
+  @OneToMany(()=> Items,(item)=>item.createdBy)
+  updateItem:Items[];
+
 }

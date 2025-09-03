@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Param, Put, Delete } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import {
   CreateCategoryDto,
@@ -16,23 +16,23 @@ export class CategoriesController {
     return this.categoriesService.createCategory(createCategoryDto);
   }
 
-  @Post('getall')
-  getAllCategories(@Body() getAllCategoryDto: GetAllCategoryDto) {
+  @Get('getall')
+  getAllCategories(@Query() getAllCategoryDto: GetAllCategoryDto) {
     return this.categoriesService.getAllCategories(getAllCategoryDto);
   }
 
-  @Post('getone')
-  getSingleCategory(@Body('id') id: any) {
+  @Get('getone/:id')
+  getSingleCategory(@Param('id') id: number) {
     return this.categoriesService.getSingleCategory(id);
   }
 
-  @Post('update')
-  updateCategory(@Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoriesService.updateCategory(updateCategoryDto);
+  @Put('update/:id')
+  updateCategory(@Param('id') id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
+    return this.categoriesService.updateCategory(id,  updateCategoryDto);
   }
 
-  @Post('delete')
-  deleteSingleCategory(@Body() deleteCategoryDto: DeleteCategoryDto) {
-    return this.categoriesService.deleteSingleCategory(deleteCategoryDto);
+  @Delete('delete/:id')
+  deleteSingleCategory(@Param('id')id:number,@Body() deleteCategoryDto: DeleteCategoryDto) {
+    return this.categoriesService.deleteSingleCategory(id,deleteCategoryDto);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import {
   CreateOrderDto,
@@ -30,8 +30,8 @@ export class OrdersController {
     return await this.ordersService.updateOrder(updateOrderDto);
   }
 
-  @Post("getallorders")
-  async getAllOrders(@Body() getAllOrdersDto: GetAllOrdersDto) {
+  @Get('getallorders')
+  async getAllOrders(@Query() getAllOrdersDto: GetAllOrdersDto) {
     return await this.ordersService.getAllOrders(getAllOrdersDto);
   }
 }

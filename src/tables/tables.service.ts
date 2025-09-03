@@ -5,7 +5,7 @@ import {
   GetAllTablesDto,
   UpdateTableDto,
 } from './dto/table.dto';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, Not, Repository } from 'typeorm';
 import { Table } from './entities/table.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Block } from 'src/blocks/entities/block.entity';
@@ -26,6 +26,7 @@ export class TablesService {
           activeStatus: status ? status : undefined,
           block: block ? { id: block } : undefined,
           tableName: tableName ? tableName : undefined,
+          ...(status === undefined && { activeStatus: Not(2) }),
         },
         select: {
           id: true,

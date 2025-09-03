@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Put,
 } from '@nestjs/common';
 import { ExpenseitemsService } from './expenseitems.service';
 import {
@@ -24,22 +26,22 @@ export class ExpenseitemsController {
     return this.expenseitemsService.createExpenseitem(createExpenseitemDto);
   }
 
-  @Post('getall')
-  getAll(@Body() getAllExpenseitemsDto: GetAllExpenseitemsDto) {
+  @Get('getall')
+  getAll(@Query() getAllExpenseitemsDto: GetAllExpenseitemsDto) {
     return this.expenseitemsService.getAllExpenseitems(getAllExpenseitemsDto);
   }
 
-  @Post('getone')
-  getSingle(@Body('id') id: any) {
+  @Get('getone/:id')
+  getSingle(@Param('id') id: any) {
     return this.expenseitemsService.getSingleExpenseitem(id);
   }
 
-  @Post('update')
-  updateSingle(@Body() updateExpenseitemDto: UpdateExpenseitemDto) {
+  @Put('update/:id')
+  updateSingle(@Param('id') id: any,@Body() updateExpenseitemDto: UpdateExpenseitemDto) {
     return this.expenseitemsService.updateExpenseitem(updateExpenseitemDto);
   }
 
-  @Post('delete')
+  @Delete('delete')
   deleteSingle(@Body() deleteExpenseitemDto: DeleteExpenseitemDto) {
     return this.expenseitemsService.deleteSingleExpenseitem(
       deleteExpenseitemDto,

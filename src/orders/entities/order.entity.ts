@@ -22,11 +22,11 @@ export class Order {
 
   @ManyToOne(() => Block, { nullable: true })
   @JoinColumn({ name: 'block' })
-  block: Block;
+  block?: Block;
 
   @ManyToOne(() => Table, { nullable: true })
   @JoinColumn({ name: 'table' })
-  table: Table;
+  table?: Table;
 
   @Column({
     type: 'decimal',
@@ -87,5 +87,5 @@ export class Order {
   activeStatus: number;
 
   @OneToMany(() => Orderitem, (item) => item.order)
-  items: Orderitem[];
+  orderitems: Orderitem[];
 }

@@ -1,10 +1,13 @@
+import { Category } from "src/categories/entities/category.entity";
+import { User } from "src/users/entities/user.entity";
+
 export class CreateItemDto {
   name: string;
   description: string;
-  price: string;
+  price: number;
   available: boolean;
-  categoryId: number;
-  createdBy: number;
+  category: Category;
+  createdBy: number;       // changed to id
   activeStatus: number;
   image: any;
   type: string;
@@ -13,25 +16,25 @@ export class CreateItemDto {
 export class GetAllItemsDto {
   start: number;
   limit: number;
-  categoryId: number;
-  name: string;
-  type: string;
+  category?: number;
+  name?: string;
+  type?: string;
   status?: number;
 }
 
 export class UpdateItemDto {
   id: number;
-  name: string;
-  description: string;
-  price: string;
-  available: boolean;
-  categoryId: number;
-  updatedBy: number;
-  activeStatus: number;
-  image: any;
+  name?: string;
+  description?: string;
+  price?: number;
+  available?: boolean;
+  category?: Category;
+  updatedBy: User;       // changed to id
+  activeStatus?: number;
+  image?: any;
 }
 
 export class DeleteItemDto {
   id: number;
-  updatedBy: number;
+  updatedBy: User;       // changed to id
 }
