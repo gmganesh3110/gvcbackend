@@ -44,6 +44,8 @@ import { Emailotp } from './emailotp/entities/emailotp.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
+import { RestuarentModule } from './restuarent/restuarent.module';
+import { Restuarent } from './restuarent/entities/restuarent.entity';
 
 
 @Module({
@@ -91,7 +93,8 @@ import { TasksModule } from './tasks/tasks.module';
           Expensepo,
           Expensepoitem,
           Poinventory,
-          Emailotp
+          Emailotp,
+          Restuarent
         ],
       }),
     }),
@@ -116,6 +119,7 @@ import { TasksModule } from './tasks/tasks.module';
     PurchaseorderitemsModule,
     EmailotpModule,
     TasksModule,
+    RestuarentModule,
   ],
   controllers: [AppController],
   providers: [AppService, TasksService],

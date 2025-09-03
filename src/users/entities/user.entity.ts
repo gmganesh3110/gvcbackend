@@ -7,9 +7,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {Table} from 'src/tables/entities/table.entity';
+import { Table } from 'src/tables/entities/table.entity';
 import { Category } from 'src/categories/entities/category.entity';
 import { Items } from 'src/items/entities/item.entity';
+import { Restuarent } from 'src/restuarent/entities/restuarent.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -41,6 +42,9 @@ export class User {
   @Column()
   activeStatus: number;
 
+  @Column({ default: false })
+  isRegistered: boolean;
+
   @OneToMany(() => Block, (block) => block.createdBy)
   createdBlocks: Block[];
 
@@ -60,10 +64,12 @@ export class User {
   @OneToMany(() => Category, (category) => category.updatedBy)
   updatedCategories: Category[];
 
-  @OneToMany(()=> Items,(item)=>item.createdBy)
-  createItem:Items[];
+  @OneToMany(() => Items, (item) => item.createdBy)
+  createItem: Items[];
 
-  @OneToMany(()=> Items,(item)=>item.createdBy)
-  updateItem:Items[];
+  @OneToMany(() => Items, (item) => item.createdBy)
+  updateItem: Items[];
+
+  
 
 }

@@ -14,10 +14,18 @@ export class TasksService {
   @Cron(CronExpression.EVERY_MINUTE)
   handleCron() {
     try {
+      this.logger.debug('Deactivating expired email OTPs');
         const query=`call emailotpdeactivate()`;
         this.entityManager.query(query);
     } catch (error) {
       console.log(error);
+      this.logger.error('Error deactivating expired email OTPs');
     }
+  }
+
+  // Runs every hour
+  @Cron(CronExpression.EVERY_HOUR)
+  handleCron2() {
+    this.logger.debug('Running hourly task');
   }
 }
