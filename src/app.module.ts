@@ -39,6 +39,11 @@ import { PoinventoryModule } from './poinventory/poinventory.module';
 import { PurchaseordersModule } from './purchaseorders/purchaseorders.module';
 import { PurchaseorderitemsModule } from './purchaseorderitems/purchaseorderitems.module';
 import { Poinventory } from './poinventory/entities/poinventory.entity';
+import { EmailotpModule } from './emailotp/emailotp.module';
+import { Emailotp } from './emailotp/entities/emailotp.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
+import { TasksModule } from './tasks/tasks.module';
 
 
 @Module({
@@ -47,7 +52,7 @@ import { Poinventory } from './poinventory/entities/poinventory.entity';
       isGlobal: true,
       envFilePath: '.env',
     }),
-
+    ScheduleModule.forRoot(), 
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -85,7 +90,8 @@ import { Poinventory } from './poinventory/entities/poinventory.entity';
           Expenseitem,
           Expensepo,
           Expensepoitem,
-          Poinventory
+          Poinventory,
+          Emailotp
         ],
       }),
     }),
@@ -108,8 +114,10 @@ import { Poinventory } from './poinventory/entities/poinventory.entity';
     PoinventoryModule,
     PurchaseordersModule,
     PurchaseorderitemsModule,
+    EmailotpModule,
+    TasksModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TasksService],
 })
 export class AppModule {}

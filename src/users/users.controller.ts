@@ -7,5 +7,8 @@ import { CreateUserDto } from './dto/user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
- 
+  @Post('registermerchant')
+  async register(@Body() createUserDto: CreateUserDto): Promise<any> {
+    return await this.usersService.registermerchant(createUserDto);
+  }
 }
