@@ -46,6 +46,9 @@ import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
 import { RestuarentModule } from './restuarent/restuarent.module';
 import { Restuarent } from './restuarent/entities/restuarent.entity';
+import { S3Service } from './s3/s3.service';
+import { S3Controller } from './s3/s3.controller';
+import { S3Module } from './s3/s3.module';
 
 
 @Module({
@@ -120,8 +123,9 @@ import { Restuarent } from './restuarent/entities/restuarent.entity';
     EmailotpModule,
     TasksModule,
     RestuarentModule,
+    S3Module,
   ],
-  controllers: [AppController],
-  providers: [AppService, TasksService],
+  controllers: [AppController, S3Controller],
+  providers: [AppService, TasksService, S3Service],
 })
 export class AppModule {}
