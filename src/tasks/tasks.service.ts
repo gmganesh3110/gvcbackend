@@ -22,10 +22,4 @@ export class TasksService {
       this.logger.error('Error deactivating expired email OTPs');
     }
   }
-
-  // Runs every hour
-  @Cron(CronExpression.EVERY_HOUR)
-  handleCron2() {
-    this.logger.debug('Running hourly task');
-  }
 }

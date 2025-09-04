@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RestuarentService } from './restuarent.service';
-import { CreateRestuarentDto } from './dto/create-restuarent.dto';
-import { UpdateRestuarentDto } from './dto/update-restuarent.dto';
+import { UpdateRestuarentDto,CreateRestuarentDto } from './dto/restuarent.dto';
 
 @Controller('restuarent')
 export class RestuarentController {

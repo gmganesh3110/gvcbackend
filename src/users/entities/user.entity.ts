@@ -45,6 +45,10 @@ export class User {
   @Column({ default: false })
   isRegistered: boolean;
 
+  @ManyToOne(() => Restuarent, { nullable: true })
+  @JoinColumn({ name: 'restuarent' })
+  restuarent?: Restuarent;
+
   @OneToMany(() => Block, (block) => block.createdBy)
   createdBlocks: Block[];
 

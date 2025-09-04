@@ -19,9 +19,9 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<LoginResponse> {
     try {
       const { email, password } = loginDto;
-      const query=`call authgetloginuser(?)`;
-      const params=[email];
-      const user=await this.entityManager.query(query,params);
+      const query = `call authgetloginuser(?)`;
+      const params = [email];
+      const user = await this.entityManager.query(query, params);
       if (!user) {
         throw new NotFoundException('User not found');
       }
@@ -32,9 +32,10 @@ export class AuthService {
       if (!isPasswordMatch) {
         throw new UnauthorizedException('Password does not match');
       }
-      const payload = { id: user[0][0].id, email: user[0][0].email };
+      const payload = { user: user[0][0] };
       const token = await this.jwtService.signAsync(payload, {
         secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('JWT_EXPIRES_IN')
       });
       user[0][0].password = undefined;
       return {

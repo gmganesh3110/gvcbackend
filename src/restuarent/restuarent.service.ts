@@ -1,11 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreateRestuarentDto } from './dto/create-restuarent.dto';
-import { UpdateRestuarentDto } from './dto/update-restuarent.dto';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { UpdateRestuarentDto, CreateRestuarentDto } from './dto/restuarent.dto';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class RestuarentService {
-  create(createRestuarentDto: CreateRestuarentDto) {
-    return 'This action adds a new restuarent';
+  constructor(private readonly entityManager: EntityManager) {}
+  async create(createRestuarentDto: CreateRestuarentDto) {
+    try {
+      const {
+        name,
+        description,
+        city,
+        state,
+        country,
+        address,
+        phone,
+        email,
+        website,
+        logo,
+        banner,
+        createdBy,
+      } = createRestuarentDto;
+      const query = `call restuarentcreate(?,?,?,?,?,?,?,?,?,?,?,?)`;
+      const params = [
+        name,
+        description,
+        city,
+        state,
+        country,
+        address,
+        phone,
+        email,
+        website,
+        logo,
+        banner,
+        createdBy,
+      ];
+      return await this.entityManager.query(query, params);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException(err.message);
+    }
   }
 
   findAll() {

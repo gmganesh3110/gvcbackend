@@ -49,6 +49,8 @@ import { Restuarent } from './restuarent/entities/restuarent.entity';
 import { S3Service } from './s3/s3.service';
 import { S3Controller } from './s3/s3.controller';
 import { S3Module } from './s3/s3.module';
+import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { Subscription } from './subscriptions/entities/subscription.entity';
 
 
 @Module({
@@ -97,7 +99,8 @@ import { S3Module } from './s3/s3.module';
           Expensepoitem,
           Poinventory,
           Emailotp,
-          Restuarent
+          Restuarent,
+          Subscription
         ],
       }),
     }),
@@ -124,6 +127,7 @@ import { S3Module } from './s3/s3.module';
     TasksModule,
     RestuarentModule,
     S3Module,
+    SubscriptionsModule,
   ],
   controllers: [AppController, S3Controller],
   providers: [AppService, TasksService, S3Service],
