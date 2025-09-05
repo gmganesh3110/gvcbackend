@@ -1,16 +1,36 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as morgan from 'morgan';
-import * as bodyParser from 'body-parser';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS
-  app.enableCors();
-  app.use(bodyParser.json({ limit: '10mb' }));
-  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-  app.use(morgan('dev')); // or 'combined', 'tiny', etc.
+  app.enableCors({
+    origin: '*',
+    methods: ['POST', 'GET', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: [
+      'x-webhook-signature',
+      'x-webhook-timestamp',
+      'content-type',
+    ],
+  });
+
+  // ✅ Capture rawBody for Cashfree webhooks
+  app.use(
+    express.json({
+      verify: (req: any, res, buf) => {
+        req.rawBody = buf.toString(); // store raw body for signature verification
+      },
+    }),
+  );
+
+  // ✅ Parse URL-encoded payloads if needed (not raw)
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+  // ✅ Logging
+  app.use(morgan('dev'));
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
