@@ -35,16 +35,20 @@ export class SubscriptionsController {
   ) {
     try {
       const payload = JSON.stringify(body);
+      console.log(payload)
       const expectedSignature = crypto
         .createHmac('sha256', process.env.CASH_FREE_SECRET_KEY!)
         .update(payload)
         .digest('base64');
-
+      console.log(signature,"Signature")
+      console.log(expectedSignature,"expectedSignature");
       if (signature !== expectedSignature) {
+        
         return res.status(400).send('Invalid signature');
       }
 
       // ✅ Process event
+      console.log('body.data?.order_status', body.data?.order_status)
       if (body.data?.order_status === 'PAID') {
         await this.subscriptionsService.activateSubscription(
           body.data.order_id,
