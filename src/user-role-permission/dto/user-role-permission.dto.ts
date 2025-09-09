@@ -1,23 +1,29 @@
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, ValidateNested } from 'class-validator';
+
+import { Type } from 'class-transformer';
+
+export class CreateUserRolePermissionItemDto {
+  userRoleId: number;
+  menuId: number;
+  subMenuId: number;
+  createdBy: number;
+  updatedBy: number;
+  activeStatus: number;
+  restuarent: number;
+}
 
 export class CreateUserRolePermissionDto {
-  @IsNumber()
-  menuId: number;
+  @ValidateNested({ each: true })
+  @Type(() => CreateUserRolePermissionItemDto)
+  permissionsToSave: CreateUserRolePermissionItemDto[];
+}
 
+export class GetMenuSubmenuDto {
   @IsNumber()
-  subMenuId: number;
-
-  @IsNumber()
-  pageActionId: number;
+  @IsOptional()
+  roleId?: number;
 
   @IsNumber()
   @IsOptional()
-  createdBy?: number;
-
-  @IsNumber()
-  @IsOptional()
-  updatedBy?: number;
-
-  @IsNumber()
-  activeStatus: number;
+  restuarent?: number;
 }
