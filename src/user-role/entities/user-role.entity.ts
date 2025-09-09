@@ -1,3 +1,4 @@
+import { Restuarent } from 'src/restuarent/entities/restuarent.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
@@ -18,4 +19,8 @@ export class UserRole {
   updatedAt: Date;
   @Column()
   activeStatus: number;
+
+  @ManyToOne(() => Restuarent, { nullable: true })
+  @JoinColumn({ name: 'restuarent' })
+  restuarent: Restuarent;
 }

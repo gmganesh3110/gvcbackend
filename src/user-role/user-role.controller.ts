@@ -1,14 +1,28 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { UserRoleService } from './user-role.service';
-import { AddUserRoleDto, DeleteUserRoleDto, GetAllUserRoleDto, UpdateUserRoleDto } from './dto/user-role.dto';
+import {
+  AddUserRoleDto,
+  DeleteUserRoleDto,
+  GetAllUserRoleDto,
+  UpdateUserRoleDto,
+} from './dto/user-role.dto';
 
 @Controller('user-role')
 export class UserRoleController {
   constructor(private readonly userRoleService: UserRoleService) {}
 
-  @Post('getall')
+  @Get('getall')
   async getAllUserRole(
-    @Body() getAllUserRoleDto: GetAllUserRoleDto,
+    @Query() getAllUserRoleDto: GetAllUserRoleDto,
   ): Promise<any> {
     return await this.userRoleService.getAllUserRole(getAllUserRoleDto);
   }
@@ -18,18 +32,27 @@ export class UserRoleController {
     return await this.userRoleService.addUserRole(addUserRoleDto);
   }
 
-  @Post('getone')
-  async getSingleUserRole(@Body() id: any): Promise<any> {
-    return await this.userRoleService.getSingleUserRole(id.id);
+  @Get('getone/:id')
+  async getSingleUserRole(@Param('id') id: number): Promise<any> {
+    return await this.userRoleService.getSingleUserRole(id);
   }
 
-  @Post('delete')
-  async deleteSingleUserRole(@Body() deleteUserRoleDto: DeleteUserRoleDto): Promise<any> {
-    return await this.userRoleService.deleteSingleUserRole(deleteUserRoleDto);
+  @Delete('delete/:id')
+  async deleteSingleUserRole(
+    @Param('id') id: number,
+    @Body() deleteUserRoleDto: DeleteUserRoleDto,
+  ): Promise<any> {
+    return await this.userRoleService.deleteSingleUserRole(
+      id,
+      deleteUserRoleDto,
+    );
   }
 
-  @Post('update')
-  async updateUserRole(@Body()updateUserRoleDto:UpdateUserRoleDto):Promise<any>{
-       return await this.userRoleService.updateUserRole(updateUserRoleDto);    
+  @Put('update/:id')
+  async updateUserRole(
+    @Param('id') id: number,
+    @Body() updateUserRoleDto: UpdateUserRoleDto,
+  ): Promise<any> {
+    return await this.userRoleService.updateUserRole(id, updateUserRoleDto);
   }
 }
