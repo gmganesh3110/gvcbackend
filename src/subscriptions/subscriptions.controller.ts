@@ -25,48 +25,73 @@ export class SubscriptionsController {
     );
   }
 
+  @Post('verify')
+  async verifyPayment(@Body() body) {
+    console.log(body, 'Request verify');
+    const isValid = this.subscriptionsService.verifyPayment(body);
+    if (isValid) {
+      await this.subscriptionsService.activateSubscription(
+        body.orderId,
+        body.razorpay_payment_id,
+        body.razorpay_amount,
+      );
+      console.log('Subscription activated');
+      return { success: true };
+    } else {
+      return { success: false };
+    }
+  }
+
   @Post('webhook')
-  async handleCashfreeWebhook(
+  async handleWebhook(
     @Req() req: Request & { rawBody: string },
-    @Headers('x-webhook-signature') signature: string,
-    @Headers('x-webhook-timestamp') timestamp: string,
     @Res() res: Response,
+    @Headers('x-razorpay-signature') signature: string,
   ) {
     try {
-      const { rawBody } = req;
-      console.log('Raw Body:', rawBody);
-      console.log('Parsed Body:', req.body);
+      const secret = process.env.RAZORPAY_WEBHOOK_SECRET!;
 
-      const computedSig = crypto
-        .createHmac('sha256', process.env.CASH_FREE_SECRET_KEY!)
-        .update(timestamp + rawBody)
-        .digest('base64');
+      // Verify signature
+      const expectedSignature = crypto
+        .createHmac('sha256', secret)
+        .update(req.rawBody)
+        .digest('hex');
 
-      console.log('Timestamp:', timestamp);
-      console.log('Computed Signature:', computedSig);
-      console.log('Received Signature:', signature);
-
-      if (computedSig !== signature) {
+      if (expectedSignature !== signature) {
         throw new UnauthorizedException('Invalid webhook signature');
       }
 
-      const body = JSON.parse(rawBody);
-      console.log('Verified webhook data:', body);
+      const event = req.body;
+      console.log('Razorpay Webhook:', event);
 
-      if (body.type === 'PAYMENT_SUCCESS_WEBHOOK') {
+      if (event.event === 'order.paid' || event.event === 'payment.captured') {
+        const payment = event.payload.payment.entity;
+        const order = event.payload.order?.entity; // contains receipt
+
+        console.log('Razorpay payment:', payment);
+        console.log('Razorpay order:', order);
+
+        // ✅ Use receipt to map back to your DB subscription record
+        const dbOrderId = order?.receipt; // your UUID
+
         await this.subscriptionsService.activateSubscription(
-          body.data.order.order_id,
-          body.data.payment.cf_payment_id,
-          body.data.order.order_amount,
+          dbOrderId, // your DB order ID
+          payment.id, // razorpay_payment_id
+          (payment.amount / 100).toString(),
         );
+
+        console.log('✅ Subscription activated via webhook');
       }
 
-      return res.status(200).send('OK');
-    } catch (err: any) {
-      console.error('Cashfree Webhook Error:', err);
-      return res
-        .status(err instanceof UnauthorizedException ? err.getStatus() : 500)
-        .send(err.message || 'Webhook processing error');
+      if (event.event === 'payment.failed') {
+        console.log('❌ Payment failed:', event.payload.payment.entity);
+        // Optional: update DB to mark subscription as failed
+      }
+
+      return res.status(200).send({ status: 'ok' });
+    } catch (err) {
+      console.error('Webhook error:', err);
+      return res.status(400).send({ error: err.message });
     }
   }
 }

@@ -28,7 +28,9 @@ export class UserRolePermissionService {
         saveDto.permissionsToSave[0].restuarent,
       ];
       await this.entityManager.query(deleteQuery, deleteParams);
+      console.log(saveDto.permissionsToSave,"saveDto");
       for (const item of saveDto.permissionsToSave) {
+        console.log(item,"item");
         const query = `CALL saveuserrolepermission(?,?,?,?,?,?,?)`;
         const params = [
           item.menuId,

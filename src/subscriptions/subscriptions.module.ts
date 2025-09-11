@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Subscription])],
+  
   controllers: [SubscriptionsController],
   providers: [SubscriptionsService],
 })
